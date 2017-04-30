@@ -82,7 +82,7 @@ for file in listdir("."):
                                'G3L3-3A1':'1S' , 'G3L3-3A2':'1S' , 'G3L3-3A3':'1N' , 'G3L3-3A4':'1N' , 'G3L3-3A5':'2S' , 'G3L3-3A6':'2S' , 'G3L3-3A7':'2N' , 'G3L3-3A8':'2N' ,
                                'G3L3-3B1':'3S' , 'G3L3-3B2':'3S' , 'G3L3-3B3':'3N' , 'G3L3-3B4':'3N' , 'G3L3-3B5':'Water_Heater_N' , 'G3L3-3B6':'Microwave_N' , 'G3L3-3B7':'Water_Heater_S' , 'G3L3-3B8':'Microwave_S'
                             }
-                            #*** I'm almost positive that G3L2-2A1 should be "3S" and not 2S as listed in raw data.  This fixes error where @s has two "GenRec" monitors and gives 3S what is presumably its rightful GenRec monitor
+                            #*** I'm almost positive that G3L2-2A1 should be "3S" and not 2S as listed in raw data.  This fixes error where 2S has two "GenRec" monitors and gives 3S what is presumably its rightful GenRec monitor
         # create second dictionary between meter code and subsystem
         MeterID_to_Subsys ={    # 749
                                 'G2L1-1A1':'GenRec'  , 'G2L1-1A2':'Spare'  , 'G2L1-1A3':'Kitchen' , 'G2L1-1A4':'Lights' , 'G2L1-1A5':'GenRec'    , 'G2L1-1A6':'Lights'    , 'G2L1-1A7':'GenRec'    , 'G2L1-1A8':'Spare1'    , 
@@ -155,19 +155,3 @@ with open(master_name, 'r+') as myfile: # open master file for reading and writi
 
 print "DONE"
 # use sqlalchemy
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
