@@ -49,8 +49,13 @@ full_list = []
 print("looking for improperly formatted CSV files")
 
 # section modified from Sam Emery's Correct-CSV.py
-for file in listdir("."):
+all_files=[]
+for path, subdirs, files in os.walk("."):
+    for name in files:
+        all_files.append(os.path.join(path, name))
 
+#for file in listdir("."):
+for file in all_files:
     # convert file type to proper csv
     if file.endswith("CSV"):
         print "file: " + file
@@ -65,8 +70,9 @@ for file in listdir("."):
 print("done looking for improperly formatted CSV files")
 
 # parse well-formatted csv files
-for file in listdir("."):
 
+#for file in listdir("."):
+for file in all_files:
     if file.endswith(".csv"):
         # create dictionary between meter code and unit number                                                                                                                                                                                                                       # begin 1B                  
         MeterID_to_Unit = {    # 749
