@@ -54,15 +54,15 @@ Subsystems = ['HVAC','Kitchen','Laundry','Washer','Dryer','Lights','GenRec','Mic
 subsystem_totals = np.zeros((2,6,14))
 
 for line in full_month:
-	for b_index,b_value in enumerate(Buildings):
-		for u_index, u_value in enumerate(Units):
-			for s_index,s_value in enumerate(Subsystems):
-                if line[1]==b_value and line[2]==u_value and line[4]==s_value:
-                    subsystem_totals[b_index,u_index,s_index]=subsystem_totals[b_index,u_index,s_index]+float(line[3])
-                elif line[1]==b_value and line[2]==s_value and line[4]==s_value:
-                    subsystem_totals[b_index,u_index,s_index]=subsystem_totals[b_index,u_index,s_index]+float(line[3])
+    for b_index,b_value in enumerate(Buildings):
+        for u_index, u_value in enumerate(Units):
+            for s_index,s_value in enumerate(Subsystems):
                 #print 's_index: ' + str(s_index) + ' s_value: ' + str(s_value)
-
+                if line[1]==b_value and line[2]==u_value and line[4]==s_value:
+                    subsystem_totals[b_index,u_index,s_index]=subsystem_totals[b_index,u_index,s_index]+float(line[3])/4.0
+                elif line[1]==b_value and line[2]==s_value and line[4]==s_value:
+                    subsystem_totals[b_index,u_index,s_index]=subsystem_totals[b_index,u_index,s_index]+float(line[3])/4.0
+                    #print "test"
 print subsystem_totals
  
 
