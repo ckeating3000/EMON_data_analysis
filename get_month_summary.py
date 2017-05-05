@@ -49,9 +49,10 @@ with open(master_name, 'rb') as myfile: # open master file for reading and writi
 # 
 Buildings  = ['745', '749']
 Units      = ['1N', '1S' ,'2N','2S','3N','3S']
-Subsystems = ['HVAC','Kitchen','Laundry','Washer','Dryer','Lights','GenRec','Microwave_N','Microwave_S','MakeupAir_N','MakeupAir_S','Water_Heater_N','Water_Heater_S','Spare']
+Subsystems = ['HVAC','Kitchen','Laundry','Dryer','Lights','GenRec','Microwave_N','Microwave_S','MakeupAir_N','MakeupAir_S','Water_Heater_N','Water_Heater_S','Spare']
 
-subsystem_totals = np.zeros((2,6,14))
+subsystem_totals = np.zeros((2,6,13))
+
 
 for line in full_month:
     for b_index,b_value in enumerate(Buildings):
@@ -59,12 +60,14 @@ for line in full_month:
             for s_index,s_value in enumerate(Subsystems):
                 #print 's_index: ' + str(s_index) + ' s_value: ' + str(s_value)
                 if line[1]==b_value and line[2]==u_value and line[4]==s_value:
-                    subsystem_totals[b_index,u_index,s_index]=subsystem_totals[b_index,u_index,s_index]+float(line[3])/4.0
+                    subsystem_totals[b_index,u_index,s_index]=subsystem_totals[b_index,u_index,s_index]+float(line[3])/4000.0  # convert to kWh
                 elif line[1]==b_value and line[2]==s_value and line[4]==s_value:
-                    subsystem_totals[b_index,u_index,s_index]=subsystem_totals[b_index,u_index,s_index]+float(line[3])/4.0
+                    subsystem_totals[b_index,u_index,s_index]=subsystem_totals[b_index,u_index,s_index]+float(line[3])/4000.0
                     #print "test"
 print subsystem_totals
  
+
+
 
 #month totals
 # total_745=0.0
@@ -83,10 +86,25 @@ with file(str(date) + '_report.csv', 'w') as outfile:
 	# from http://stackoverflow.com/questions/3685265/how-to-write-a-multidimensional-array-to-a-text-file
     # Iterating through a ndimensional array produces slices along
     # the last axis. This is equivalent to data[i,:,:] in this case
+    x=""
+    for item in Subsystems:
+        x+=item+","
+    x=x[:-1]
+    outfile.write(x)
+
+    #todo: print row headers
+
+    outfile.write('\n')
+
     for data_slice in subsystem_totals:
+        for line in data_slice:
+            x=np.array2string(line,separator=",")
+            x+="test"
+            print x
         # The formatting string indicates that I'm writing out
         # the values in left-justified columns 7 characters in width
         # with 2 decimal places.
+
         np.savetxt(outfile, data_slice, fmt='%-7.2f',delimiter=",")
         # Writing out a break to indicate different slices...
         outfile.write('\n')
@@ -95,13 +113,6 @@ with file(str(date) + '_report.csv', 'w') as outfile:
 # np.savetxt("_report.csv", output, delimiter=",")
 
 print "DONE"
-
-
-
-
-
-
-
 
 
 
