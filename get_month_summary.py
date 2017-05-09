@@ -83,9 +83,7 @@ print subsystem_totals
 
 # save output to CSV
 with file(str(date) + '_report.csv', 'w') as outfile:
-	# from http://stackoverflow.com/questions/3685265/how-to-write-a-multidimensional-array-to-a-text-file
-    # Iterating through a ndimensional array produces slices along
-    # the last axis. This is equivalent to data[i,:,:] in this case
+    # create column headers and write to outfile
     x=""
     for item in Subsystems:
         x+=item+","
@@ -96,11 +94,22 @@ with file(str(date) + '_report.csv', 'w') as outfile:
 
     outfile.write('\n')
 
-    for data_slice in subsystem_totals:
+    slice_745=[][]
+    slice_749=[][]
+
+    for index, data_slice in subsystem_totals:
+        if index==0:
+            slice_745=data_slice
+            #print ""
+        else:
+            slice_749=data_slice
         for line in data_slice:
-            x=np.array2string(line,separator=",")
-            x+="test"
-            print x
+            print line
+            #x=np.array2string(line,separator=",")
+            #x+="test"
+            #print x
+            #np.savetxt(outfile, line, fmt='%-7.2f',delimiter=",")
+            #outfile.write('\n')
         # The formatting string indicates that I'm writing out
         # the values in left-justified columns 7 characters in width
         # with 2 decimal places.

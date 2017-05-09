@@ -1,5 +1,8 @@
-# updated for use with the raw csv files received from Matt Stuart at Quadrangle Housing
-# create master list of all properly formatted emon data
+# * updated to save data in new format
+
+# for use with the raw csv files received from Matt Stuart at Quadrangle Housing
+# append new data to an existing master list of all properly formatted emon data
+
 import sys, re, csv, codecs, os
 from os import listdir
 from os.path import isfile, join
@@ -18,7 +21,7 @@ class DataPoint:
             self.energy_use = energy_use
             self.monitor_type = monitor_type
         def __str__(self):
-            return (self.date_time + " " + self.building + " " + self.unit + " " + self.energy_use + " " + self.monitor_type)
+            return (self.date_time + " " +  self.unit + " " + self.energy_use + " " + self.monitor_type)
 
 # From Correct-CSV.py by Sam Emery
 '''Function to get the file name'''
@@ -31,7 +34,6 @@ def get_file_name(name):
     return s
     del l,new_name,s
 
-
 #
 #
 # Begin script
@@ -39,10 +41,10 @@ def get_file_name(name):
 #
 
 # check for correct num args
-if len(sys.argv)!=2:
+if len(sys.argv)<2:
 	sys.exit ("Usage: Python sql_csv_parse_5.py [master_spreadsheet_filename]")
 
-# create list of datapoints
+# create array of datapoints
 full_list = []
 
 # first loop to find improperly formatted (".CSV") files
@@ -139,11 +141,13 @@ for file in all_files:
                                 full_list.append(DataPoint(row[0], building, unit, value, subsystem))
 
 
+full_list_new_format = [[0 for x in range(size(MeterID_to_Unit))] for y in range(size(full_list))]
+print "size of new list is: " + str(size(full_list_new_format))
 # push into csv
 # from http://stackoverflow.com/questions/2084069/create-a-csv-file-with-values-from-a-python-list
 # get master spreadsheet file name
 master_name = sys.argv[1]
-master_name += ".csv"
+
 # with open("filename", "r+") as file:
 #     for line in file:
 #         if needle in line:
@@ -151,19 +155,15 @@ master_name += ".csv"
 #     else: # not found, we are at the eof
 #         file.write(needle) # append missing data
 
-# sort full_list by date_time parameter in each datapoint object
-#full_list.sort()
-full_list.sort(key=lambda x: (x.date_time, x.building, x.unit, x.monitor_type), reverse=False)
-
-with open(master_name, 'wb') as myfile: # open master file for reading and writing
+with open(master_name, 'r+') as myfile: # open master file for reading and writing
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
     for datapt in full_list:
         temp_data = [datapt.date_time, datapt.building, datapt.unit, datapt.energy_use, datapt.monitor_type]
-        #for line in myfile:
-        #    if all(data in line for data in temp_data): # if that datapoint already exists, don't add it
-        #       break
-        #else:
-        wr.writerow([datapt.date_time, datapt.building, datapt.unit, datapt.energy_use, datapt.monitor_type])
+        for line in myfile:
+            if all(data in line for data in temp_data): # if that datapoint already exists, don't add it
+                break
+        else:
+            wr.writerow([datapt.date_time, datapt.building, datapt.unit, datapt.energy_use, datapt.monitor_type])
 
 print "DONE"
 # use sqlalchemy

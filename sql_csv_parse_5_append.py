@@ -1,5 +1,5 @@
 # updated for use with the raw csv files received from Matt Stuart at Quadrangle Housing
-# create master list of all properly formatted emon data
+# append master list of all properly formatted emon data
 import sys, re, csv, codecs, os
 from os import listdir
 from os.path import isfile, join
@@ -18,7 +18,7 @@ class DataPoint:
             self.energy_use = energy_use
             self.monitor_type = monitor_type
         def __str__(self):
-            return (self.date_time + " " + self.building + " " + self.unit + " " + self.energy_use + " " + self.monitor_type)
+            return (self.date_time + "," + self.building + "," + self.unit + "," + self.energy_use + "," + self.monitor_type)
 
 # From Correct-CSV.py by Sam Emery
 '''Function to get the file name'''
@@ -143,27 +143,27 @@ for file in all_files:
 # from http://stackoverflow.com/questions/2084069/create-a-csv-file-with-values-from-a-python-list
 # get master spreadsheet file name
 master_name = sys.argv[1]
-master_name += ".csv"
-# with open("filename", "r+") as file:
-#     for line in file:
-#         if needle in line:
-#            break
-#     else: # not found, we are at the eof
-#         file.write(needle) # append missing data
+
+
+with open(master_name, 'r+', delimiter=',') as myfile:
+    for line in myfile:
+        full_list.append(DataPoint(line[0], line[1], line[2], line[3], line[4]))
 
 # sort full_list by date_time parameter in each datapoint object
-#full_list.sort()
 full_list.sort(key=lambda x: (x.date_time, x.building, x.unit, x.monitor_type), reverse=False)
 
-with open(master_name, 'wb') as myfile: # open master file for reading and writing
+
+with open(master_name, 'w') as myfile: # open master file for writing
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
     for datapt in full_list:
-        temp_data = [datapt.date_time, datapt.building, datapt.unit, datapt.energy_use, datapt.monitor_type]
-        #for line in myfile:
-        #    if all(data in line for data in temp_data): # if that datapoint already exists, don't add it
-        #       break
-        #else:
+        # temp_data = [datapt.date_time, datapt.building, datapt.unit, datapt.energy_use, datapt.monitor_type]
+        # for line in myfile:
+        #     if all(data in line for data in temp_data): # if that datapoint already exists, don't add it
+        #         break
+        # else:
         wr.writerow([datapt.date_time, datapt.building, datapt.unit, datapt.energy_use, datapt.monitor_type])
+
+
 
 print "DONE"
 # use sqlalchemy
