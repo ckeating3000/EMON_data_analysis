@@ -10,43 +10,63 @@ import numpy as np
 
 
 # check for correct num args
-if len(sys.argv)!=3:
-	sys.exit ("Usage: Python get_month_summary.py [mm-yy] [master_spreadsheet_filename]")
+if len(sys.argv)!=4:
+	sys.exit ("Usage: Python get_month_summary.py [mm-dd-yy] [mm-dd-yy] [master_spreadsheet_filename] \n enter start and end dates for summary")
 
 #parameters needed (per building):
 #Averages: 
 #	   	total unit, lights, kitchen, laundry, HVAC, outlets, microwave, water heating 
 #Unit: 
 #		total unit, lights, kitchen, laundry, HVAC, outlets, microwave, water heating 
-date = sys.argv[1]
-if len(date)!=5:
-	sys.exit ("Usage: Python get_month_summary.py [mm-yy] [master_spreadsheet_filename]")
-month = int(date.split("-")[0])
-year = int(date.split("-")[1])+2000
+start_date = sys.argv[1]
+end_date = sys.argv[2]
 
-master_name = sys.argv[2]
-print "month: " + str(month)
-print "year: " + str(year)
+if len(start_date)!=8 or len(end_date)!=8:
+	   sys.exit ("Usage: Python get_month_summary.py [mm-dd-yy] [mm-dd-yy] [master_spreadsheet_filename] \n enter start and end dates for summary")
+
+#store start and end dates as variables
+start_day = int(start_date.split("-")[1])
+start_month = int(start_date.split("-")[0])
+start_year = int(start_date.split("-")[2])+2000
+end_day = int(end_date.split("-")[1])
+end_month = int(end_date.split("-")[0])
+end_year = int(end_date.split("-")[2])+2000
+
+master_name = sys.argv[3]
+print "start month: " + str(start_month)
+print "start day: " + str(start_day)
+print "start year: " + str(start_year)
+print "end month: " + str(end_month)
+print "end day: " + str(end_day)
+print "end year: " + str(end_year)
 print "file name: " + master_name
-full_month=[]
+full_data=[]
 
 #   IMPORTANT: must save the master file as: Windows Comma Separated Values type
 
 with open(master_name, 'rb') as myfile: # open master file for reading and writing
     #reader = csv.reader(myfile, dialect=csv.excel_tab) #, delimiter=' ', quotechar='|'
     reader = csv.reader(myfile, delimiter=',') #, delimiter=' ', quotechar='|'
+    lines_added=0
     for line in reader:
-    	#get the month and year from that line
+    	#get the month day and year from that line
     	date_time = line[0]
     	temp_month = int(date_time.split("/")[0])
+        temp_day = int(date_time.split("/")[1])
     	temp_year = date_time.split("/")[2]
     	temp_year = int(temp_year.split(" ")[0])
     	#print "temp month: " + str(temp_month)
     	#print "temp_year : " + str(temp_year)
-    	if (temp_year==year and temp_month==month):
-    		full_month.append(line)
 
-# 
+        #check database for valid entries and append to list if valid
+        valid_year = temp_year>=start_year and temp_year<=end_year
+        valid_month = temp_month>=start_month and temp_month<=end_month
+        valid_day = temp_day>=start_day and temp_day<=end_day
+        if (valid_year and valid_month and valid_day):
+            full_data.append(line)
+            lines_added+=1
+    print "lines added: " + str(lines_added)
+
 Buildings  = ['745', '749']
 Units      = ['1N', '1S' ,'2N','2S','3N','3S']
 Subsystems = ['HVAC','Kitchen','Laundry','Dryer','Lights','GenRec','Microwave_N','Microwave_S','MakeupAir_N','MakeupAir_S','Water_Heater_N','Water_Heater_S','Spare']
@@ -54,7 +74,7 @@ Subsystems = ['HVAC','Kitchen','Laundry','Dryer','Lights','GenRec','Microwave_N'
 subsystem_totals = np.zeros((2,6,13))
 
 # sum all datapoints for each category
-for line in full_month:
+for line in full_data:
     for b_index,b_value in enumerate(Buildings):
         for u_index, u_value in enumerate(Units):
             for s_index,s_value in enumerate(Subsystems):
@@ -140,8 +160,8 @@ print subsystem_totals[0,0,1]
 print subsystem_totals[0,0,2]
 print Units[0]+","+str(subsystem_totals[0,0,0])+","+str(subsystem_totals[0,0,1])
 
+#add row names
 values_with_row_name = []
-
 for b_index, b_value in enumerate(Buildings):
     for u_index, u_value in enumerate(Units):
         x=""
@@ -151,7 +171,8 @@ for b_index, b_value in enumerate(Buildings):
         del x
     values_with_row_name.append("")
 
-with file(str(date) + '_report.csv', 'w') as outfile:
+#write to CSV
+with file(str(start_date) + ' to ' + str(end_date) + '_report.csv', 'w') as outfile:
     # create column headers and write to outfile
     x=","
     for item in Subsystems:
