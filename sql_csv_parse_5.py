@@ -123,7 +123,9 @@ for file in all_files:
                             print(initial_meter_code_list)
                             for index, value in enumerate(initial_meter_code_list):
                                 if len(value)==0:
-                                    print "invalid meter code at index: " + str(index) 
+                                    print "invalid meter code at index: " + str(index)
+                                elif index > 8:
+                                    break 
                                 else:
                                     meter_code_list.append(value)
                             reachdata = True
@@ -154,8 +156,9 @@ master_name = sys.argv[1]
 #         file.write(needle) # append missing data
 
 # sort full_list by date_time parameter in each datapoint object
-#full_list.sort()
-full_list.sort(key=lambda x: (x.date_time, x.building, x.unit, x.monitor_type), reverse=False)
+full_list.sort(key=lambda x: (x.date_time.split('/')[2].split(" ")[0], x.date_time.split('/')[0], x.date_time.split('/')[1], x.date_time.split('/')[2].split(" ")[1], x.building, x.unit, x.monitor_type), reverse=False)
+
+#full_list.sort(key=lambda x: (x.date_time, x.building, x.unit, x.monitor_type), reverse=False)
 
 with open(master_name, 'wb') as myfile: # open master file for reading and writing
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
