@@ -1,5 +1,8 @@
 # updated for use with the raw csv files received from Matt Stuart at Quadrangle Housing
-# create master list of all properly formatted emon data
+# * IMPORTANT: this script will create a new master file
+#              it will overwrite any previous file with the same filename
+# Usage: Python sql_csv_parse_5.py [master_spreadsheet_filename]
+
 import sys, re, csv, codecs, os
 from os import listdir
 from os.path import isfile, join
@@ -38,7 +41,7 @@ def get_file_name(name):
 #
 #
 
-# check for correct num args
+# check for correct number of arguments
 if len(sys.argv)!=2:
 	sys.exit ("Usage: Python sql_csv_parse_5.py [master_spreadsheet_filename]")
 
@@ -143,7 +146,6 @@ for file in all_files:
 # from http://stackoverflow.com/questions/2084069/create-a-csv-file-with-values-from-a-python-list
 # get master spreadsheet file name
 master_name = sys.argv[1]
-master_name += ".csv"
 # with open("filename", "r+") as file:
 #     for line in file:
 #         if needle in line:
