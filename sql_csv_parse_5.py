@@ -156,7 +156,10 @@ master_name = sys.argv[1]
 #         file.write(needle) # append missing data
 
 # sort full_list by date_time parameter in each datapoint object
-full_list.sort(key=lambda x: (x.date_time.split('/')[2].split(" ")[0], x.date_time.split('/')[0], x.date_time.split('/')[1], x.date_time.split('/')[2].split(" ")[1], x.building, x.unit, x.monitor_type), reverse=False)
+full_list.sort(key=lambda x: (int(x.date_time.split('/')[2].split(" ")[0]), int(x.date_time.split('/')[0]),
+    int(x.date_time.split('/')[1]), int(x.date_time.split('/')[2].split(" ")[1].split(':')[0]),
+    x.building,int(x.date_time.split('/')[2].split(" ")[1].split(':')[1]), x.building, x.unit,
+    x.monitor_type), reverse=False)
 
 #full_list.sort(key=lambda x: (x.date_time, x.building, x.unit, x.monitor_type), reverse=False)
 
