@@ -163,13 +163,14 @@ master_name = sys.argv[1]
 #     x.monitor_type), reverse=False)
 
 # updated sort is below:
-full_list.sort(key=lambda x: x.monitor_type, reverse=False)                                # meter
-full_list.sort(key=lambda x: x.unit, reverse=False)                                        # unit
-full_list.sort(key=lambda x: x.building, reverse=False)                                    # building
-full_list.sort(key=lambda x: (x.date_time.split('/')[2].split(" ")[1]), reverse=False)     # time
-full_list.sort(key=lambda x: int(x.date_time.split('/')[1]), reverse=False)                # day
-full_list.sort(key=lambda x: int(x.date_time.split('/')[0]), reverse=False)                # month
-full_list.sort(key=lambda x: int(x.date_time.split('/')[2].split(" ")[0]), reverse=False)  # year
+full_list.sort(key=lambda x: x.monitor_type, reverse=False)                                                 # meter
+full_list.sort(key=lambda x: x.unit, reverse=False)                                                         # unit
+full_list.sort(key=lambda x: int(x.building), reverse=False)                                                # building
+full_list.sort(key=lambda x: int(x.date_time.split('/')[2].split(" ")[-1].split(":")[-1]), reverse=False)   # time (hour)
+full_list.sort(key=lambda x: int(x.date_time.split('/')[2].split(" ")[-1].split(":")[0]), reverse=False)    # time (min)
+full_list.sort(key=lambda x: int(x.date_time.split('/')[1]), reverse=False)                                 # day
+full_list.sort(key=lambda x: int(x.date_time.split('/')[0]), reverse=False)                                 # month
+full_list.sort(key=lambda x: int(x.date_time.split('/')[2].split(" ")[0][-2:]), reverse=False)      # year (last two digits)
 
 #full_list.sort(key=lambda x: (x.date_time, x.building, x.unit, x.monitor_type), reverse=False)
 
